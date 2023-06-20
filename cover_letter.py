@@ -1,13 +1,15 @@
 import openai as ai
 import json
 import streamlit as st 
+import os
 
 print("** Loading API Key")
-ai.api_key = "API KEY HERE"
+ai.api_key = os.getenv('OPENAI_API_KEY')
 
-st.title("Amber's Guide To Job Apps")
-st.markdown("# Cover Letter Generator 🎈")
-st.sidebar.markdown("# Cover Letter Generator  🎈")
+st.title("Sarath's Simple App")
+st.markdown("# Cover Letter Generator")
+st.markdown(" ### Powered by GPT 3")
+st.sidebar.markdown("# Cover Letter Generator")
 
 with st.sidebar: 
     model_used = st.selectbox(
@@ -23,12 +25,6 @@ with st.sidebar:
          generation, Davinci is going to produce the best results. These increased 
          capabilities require more compute resources, so Davinci costs more per API call and is not as fast as the other models.
         """)
-        # st.markdown("""
-        # Good at: 
-        #     * Complex intent
-        #     * cause and effects
-        #     * summarization for audience
-        # """)
     elif model_used == 'text-curie-001': 
         st.markdown("""[Curie](https://beta.openai.com/docs/models/curie) is extremely powerful, yet very fast. While Davinci is stronger when it 
         comes to analyzing complicated text, Curie is quite capable for many nuanced tasks like sentiment 
@@ -59,15 +55,14 @@ with st.form(key='my_form_to_submit'):
     company_name = st.text_input("Company Name: ", "Google")
     role = st.text_input("What role are you applying for? ", "Machine Learning Engineer")
     contact_person = st.text_input("Who are you emailing? ", "Technical Hiring Manager")
-    your_name = st.text_input("What is your name? ", "Amber Teng")
-    personal_exp = st.text_input("I have experience in...", "natural language processing, fraud detection, statistical modeling, and machine learning algorithms. ")
+    your_name = st.text_input("What is your name? ", "Sarath Kumaar")
+    personal_exp = st.text_input("I have experience in...", "natural language processing, deep learning, statistical modeling, and machine learning algorithms. ")
     job_desc = st.text_input("I am excited about the job because...", "this role will allow me to work on technically challenging problems and create impactful solutions while working with an innovative team. " )
     passion = st.text_input("I am passionate about...", "solving problems at the intersection of technology and social good.")
-    # job_specific = st.text_input("What do you like about this job? (Please keep this brief, one sentence only.) ")
-    # specific_fit = st.text_input("Why do you think your experience is a good fit for this role? (Please keep this brief, one sentence only.) ")
     submit_button = st.form_submit_button(label='Submit')
 
-prompt = ("Write a cover letter to " + contact_person + " from " + your_name +" for a " + role + " job at " + company_name +"." + " I have experience in " +personal_exp + " I am excited about the job because " +job_desc + " I am passionate about "+ passion)
+prompt = ("Write the best cover letter to " + contact_person + " from " + your_name +" for the role of " + role + " at " + company_name +
+          " using this information:" + " I have experience in " +personal_exp + " I am excited about the job because " +job_desc + " I am passionate about "+ passion)
 
 if submit_button:
     # The Model
@@ -76,7 +71,7 @@ if submit_button:
         # engine="text-davinci-002", # OpenAI has made four text completion engines available, named davinci, ada, babbage and curie. We are using davinci, which is the most capable of the four.
         prompt=prompt, # The text file we use as input (step 3)
         max_tokens=int(max_tokens), # how many maximum characters the text will consists of.
-        temperature=0.99,
+        temperature=float(temperature),
         # temperature=int(temperature), # a number between 0 and 1 that determines how many creative risks the engine takes when generating text.,
         top_p=int(top_p), # an alternative way to control the originality and creativity of the generated text.
         n=1, # number of predictions to generate
